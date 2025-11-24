@@ -22,7 +22,7 @@ export default function Home() {
       <header className="w-full max-w-2xl text-center mb-8 md:mb-12">
         <Logo />
         <h1 className="text-4xl md:text-5xl font-bold font-headline mt-4 text-primary">
-          MoodSnap AI
+          MoodPix AI
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">
           Let AI read your vibe. Get a personalized mood package in seconds.

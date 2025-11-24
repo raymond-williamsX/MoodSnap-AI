@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'MoodSnap AI',
+  title: 'MoodPix AI',
   description: 'Create viral and emotional visual experiences based on your mood.',
 };
 
