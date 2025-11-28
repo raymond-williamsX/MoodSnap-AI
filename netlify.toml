@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/*"
+  to = "https://moodpixai.netlify.app/:splat"
+  status = 301
+  force = true
