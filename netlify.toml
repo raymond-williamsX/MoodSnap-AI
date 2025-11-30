@@ -3,3 +3,4 @@
 #  to = "https://moodpixai.netlify.app/:splat"
 #  status = 301
  # force = true
+# currently making a new repo for the URL: https://moodsnapai.netlify.app THE REPO CONTAINS A REDIRECT FILE THAT WILL REDIRECT TO NEW URL: https://moodsnapai.netlify.app until SEO is fixed.
