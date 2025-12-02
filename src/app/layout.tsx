@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: 'MoodPix AI',
   description: 'Create viral and emotional visual experiences based on your mood.',
+  image: '/favicon.ico',
 };
 
 export default function RootLayout({
