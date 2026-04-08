@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { analyzeTextAction, analyzePhotoAction } from '@/app/actions';
 import type { AnalyzeMoodOutput } from '@/ai/flows/analyze-mood';
 import { useToast } from '@/hooks/use-toast';
-import { Camera, FileText, Loader2, Upload } from 'lucide-react';
+import { Camera, FileText, Loader2, Upload, Sparkles, Zap } from 'lucide-react';
 import Image from 'next/image';
 
 const formSchema = z.object({
@@ -86,86 +86,141 @@ export function MoodForm({ setLoading, setMoodPackage, setUserImage, loading }: 
     }
   };
 
+  const submitForm = form.handleSubmit(onSubmit);
+  const handleTextKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (loading) return;
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      submitForm();
+    }
+  };
+
   return (
-    <Card className="w-full shadow-lg border-primary/20">
-      <CardHeader>
-        <CardTitle>How are you feeling?</CardTitle>
-        <CardDescription>Share your mood through words or a photo.</CardDescription>
+    <Card className="w-full shadow-[0_25px_90px_rgba(15,23,42,0.45)] border-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-lg overflow-hidden relative">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,_rgba(255,255,255,.12),_transparent_55%)]"></div>
+      <CardHeader className="pt-10 pb-6 text-center">
+        <CardTitle className="text-3xl font-semibold tracking-wide text-white">MoodSnap AI</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground text-opacity-80">
+          Choose your vibe input and let the AI craft a cinematic mood reveal.
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="text"><FileText className="mr-2 h-4 w-4" />Write it out</TabsTrigger>
-            <TabsTrigger value="photo"><Camera className="mr-2 h-4 w-4" />Upload a photo</TabsTrigger>
-          </TabsList>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
-              <TabsContent value="text">
-                <FormField
-                  control={form.control}
-                  name="text"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="sr-only">Describe your mood</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="e.g., feeling heartbroken but hopeful..."
-                          className="resize-none"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </TabsContent>
-              <TabsContent value="photo">
-                <FormField
-                  control={form.control}
-                  name="photo"
-                  render={() => (
-                    <FormItem>
-                      <FormControl>
-                        <div
-                          className="relative flex justify-center items-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept="image/png, image/jpeg, image/webp"
-                            className="hidden"
+      <CardContent className="relative">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60 flex items-center justify-center gap-2">
+              <Sparkles className="h-4 w-4 text-amber-300" />
+              Premium sensing
+            </p>
+            <p className="text-lg text-center font-light text-white/80">
+              Self-care powered by AI + human-level aesthetics.
+            </p>
+          </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
+            <TabsList className="grid w-full grid-cols-2 rounded-full border border-white/20 bg-white/5 p-1 text-sm text-white/70">
+              <TabsTrigger value="text" className="rounded-full">
+                <FileText className="mr-2 h-4 w-4" /> Write it out
+              </TabsTrigger>
+              <TabsTrigger value="photo" className="rounded-full">
+                <Camera className="mr-2 h-4 w-4" /> Upload a photo
+              </TabsTrigger>
+            </TabsList>
+            <Form {...form}>
+              <form onSubmit={submitForm} className="space-y-6 mt-6">
+                <TabsContent value="text">
+                  <FormField
+                    control={form.control}
+                    name="text"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="sr-only">Describe your mood</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Tell me how you feel in a sentence or two – enter submits, shift+enter adds a line."
+                            className="resize-none rounded-2xl bg-white/90 text-slate-900 shadow-inner border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                            rows={4}
+                            onKeyDown={handleTextKeyDown}
+                            {...field}
                           />
-                          {imagePreview ? (
-                            <Image src={imagePreview} alt="Preview" fill className="rounded-lg object-contain" />
-                          ) : (
-                            <div className="text-center text-muted-foreground">
-                              <Upload className="mx-auto h-10 w-10 mb-2" />
-                              <p>Click to upload or drag and drop</p>
-                              <p className="text-xs">PNG, JPG, WEBP up to 4MB</p>
-                            </div>
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
+                        </FormControl>
+                        <FormMessage />
+                        <p className="mt-2 text-[0.7rem] uppercase tracking-[0.3em] text-white/50">
+                          press enter to post · shift+enter for a new line
+                        </p>
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+                <TabsContent value="photo">
+                  <FormField
+                    control={form.control}
+                    name="photo"
+                    render={() => (
+                      <FormItem>
+                        <FormControl>
+                          <div
+                            className="relative flex flex-col justify-center items-center w-full h-52 border-2 border-dashed border-white/20 rounded-2xl cursor-pointer hover:border-amber-300 transition-colors"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <input
+                              type="file"
+                              ref={fileInputRef}
+                              onChange={handleFileChange}
+                              accept="image/png, image/jpeg, image/webp"
+                              className="hidden"
+                            />
+                            {imagePreview ? (
+                              <Image src={imagePreview} alt="Preview" fill className="rounded-2xl object-cover" />
+                            ) : (
+                              <div className="text-center text-white/70 space-y-1">
+                                <Upload className="mx-auto h-10 w-10 text-white" />
+                                <p className="text-sm">Tap or drop a photo</p>
+                                <p className="text-xs text-white/40">PNG · JPG · WEBP · ⩽ 4MB</p>
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+                <Button
+                  type="submit"
+                  className="w-full rounded-2xl border border-white/30 bg-gradient-to-r from-amber-400 to-rose-500 text-lg font-semibold tracking-wide text-slate-900 hover:scale-[1.01] transition-transform"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="mr-2 h-4 w-4" />
+                      Reveal my mood
+                    </>
                   )}
-                />
-              </TabsContent>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  'Generate Mood'
-                )}
-              </Button>
-            </form>
-          </Form>
-        </Tabs>
+                </Button>
+              </form>
+            </Form>
+          </Tabs>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3 text-center text-[0.7rem] uppercase tracking-[0.3em] text-white/60">
+            <div className="rounded-2xl bg-white/5 p-3 border border-white/10">
+              <Sparkles className="mx-auto h-4 w-4 text-amber-300" />
+              <p>AI insight</p>
+              <p className="text-xs text-white/40">Custom for you</p>
+            </div>
+            <div className="rounded-2xl bg-white/5 p-3 border border-white/10">
+              <Sparkles className="mx-auto h-4 w-4 text-sky-300" />
+              <p>24h readiness</p>
+              <p className="text-xs text-white/40">Always available</p>
+            </div>
+            <div className="rounded-2xl bg-white/5 p-3 border border-white/10">
+              <Sparkles className="mx-auto h-4 w-4 text-emerald-300" />
+              <p>Safe privacy</p>
+              <p className="text-xs text-white/40">No data retained</p>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
